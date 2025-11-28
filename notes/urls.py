@@ -1,9 +1,13 @@
 from django.urls import path
-from .views import NoteListCreateView, NoteDetailView, RegisterView, CustomTokenObtainPairView
+from rest_framework.routers import DefaultRouter
+from .views import NoteViewSet, RegisterView, CustomTokenObtainPairView
+
+router = DefaultRouter()
+router.register('notes', NoteViewSet, basename='notes')
 
 urlpatterns = [
-    path('notes/', NoteListCreateView.as_view()),
-    path('notes/<int:pk>/', NoteDetailView.as_view()),
-    path('auth/register/', RegisterView.as_view()),
-    path('auth/login/', CustomTokenObtainPairView.as_view()),
+    path('auth/register/', RegisterView.as_view(), name='register'),
+    path('auth/login/', CustomTokenObtainPairView.as_view(), name='login'),
 ]
+
+urlpatterns += router.urls

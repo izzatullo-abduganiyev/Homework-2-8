@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
 from .models  import NoteModel
 from django.contrib.auth.models import User
 from .serializers import NoteSerializer, UserSerializer
@@ -25,20 +25,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-class NoteListCreateView(generics.ListCreateAPIView):
+class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = NoteSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return NoteModel.objects.filter(owner=self.request.user)
-    
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
-
-class NoteDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return NoteModel.objects.filter(owner=self.request.user)
